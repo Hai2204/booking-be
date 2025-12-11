@@ -34,4 +34,13 @@ public class Room {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Booking> bookings;
+
+    @Column(length = 2000)
+    private String description;
+
+    @Column
+    private String amenities;
+
+    @Column
+    private String policy;
 }

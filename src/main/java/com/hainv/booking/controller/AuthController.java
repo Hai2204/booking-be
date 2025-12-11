@@ -1,5 +1,6 @@
 package com.hainv.booking.controller;
 
+import com.hainv.booking.entity.dto.UserLoginModal;
 import com.hainv.booking.entity.user.User;
 import com.hainv.booking.repository.user.UserRepository;
 import com.hainv.booking.security.JwtTokenProvider;
@@ -29,11 +30,13 @@ public class AuthController {
         if (!encoder.matches(user.getPassword(), u.getPassword())) {
             throw new Exception("Incorrect username/password");
         }
-
-        u.setPassword(null);
+        UserLoginModal userModal = new UserLoginModal();
+        userModal.setUsername(u.getUsername());
+        userModal.setFullName(u.getFullName());
+        userModal.setRoleName(u.getRole().getRoleCode());
 
         Map<String, Object> result = new HashMap<>();
-        result.put("user", u);
+        result.put("user", userModal);
         result.put("token", jwt.generateToken(user.getUsername()));
         return result;
 

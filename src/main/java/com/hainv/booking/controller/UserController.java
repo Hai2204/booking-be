@@ -1,6 +1,7 @@
 package com.hainv.booking.controller;
 
 import com.hainv.booking.entity.booking.Booking;
+import com.hainv.booking.entity.booking.Customer;
 import com.hainv.booking.entity.user.User;
 import com.hainv.booking.entity.user.UserRequest;
 import com.hainv.booking.entity.user.UserSummary;
@@ -32,6 +33,10 @@ public class UserController {
         if (existingUser.isPresent()) {
             throw new Exception("Tên đăng nhập đã tồn tại");
         }
+        Optional<Customer> customer = customerRepository.findByNationalId(userRequest.getNationalId());
+        if (customer.isPresent()){
+            throw new Exception("Khách hàng đã tồn tại");
+        }
 
         User user = new User();
         user.setUsername(userRequest.getUsername());
@@ -39,10 +44,16 @@ public class UserController {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(userRequest.getPassword()));
-
-        user.setRoles(roleRepository.findAllById(userRequest.getRoleIds()));
-
+        user.setRole(roleRepository.findById(userRequest.getRoleId()).orElseThrow(() -> new Exception("Role không tồn tại")));
         userRepository.save(user);
+
+        Customer cus = new Customer();
+        cus.setAge(userRequest.getAge());
+        cus.setName(userRequest.getFullName());
+        cus.setEmail(userRequest.getEmail());
+        cus.setPhoneNumber(userRequest.getPhone());
+        cus.setNationalId(userRequest.getNationalId());
+        customerRepository.save(cus);
 
         return userRepository.findProjectedByUsername(user.getUsername());
     }

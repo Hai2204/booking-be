@@ -31,6 +31,9 @@ public class Accommodation {
     private String description;
 
     @Column
+    private String city;
+
+    @Column
     private String address;
 
     @OneToMany(mappedBy = "accommodation", cascade = CascadeType.ALL, orphanRemoval = true)

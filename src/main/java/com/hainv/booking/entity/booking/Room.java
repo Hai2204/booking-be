@@ -23,8 +23,14 @@ public class Room {
     @Column(length = 50, nullable = false)
     private String name;
 
-    @Column(name = "type_room", length = 20)
-    private String typeRoom; // 2_person / 4_person / the_whole_house
+    @Column
+    private String roomCode;
+
+    @Column
+    private String roomCategory;
+
+    @Column(name = "type_room")
+    private Integer typeRoom; // 2_person / 4_person / the_whole_house
 
     private Integer price;
 

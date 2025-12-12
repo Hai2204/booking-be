@@ -12,6 +12,8 @@ import com.hainv.booking.repository.booking.PartnerRepository;
 import com.hainv.booking.repository.booking.RoomRepository;
 import com.hainv.booking.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -58,8 +60,11 @@ public class CommonController {
     }
 
     @GetMapping("/rooms")
-    public ApiResponse<List<Room>> fetchRooms() {
-        return ApiResponse.success(roomRepository.findAll());
+    public ApiResponse<List<Room>> fetchRooms(@RequestParam(value = "category", required = false) String category,
+                                              @RequestParam(value = "limit", required = false) Integer limit) {
+        Pageable pageable = PageRequest.of(0, limit == null ? Integer.MAX_VALUE : limit);
+
+        return ApiResponse.success(roomRepository.findRooms(category, pageable));
     }
 
     @GetMapping("/room/{id}")

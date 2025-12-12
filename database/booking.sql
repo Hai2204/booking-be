@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS room (
     id SERIAL PRIMARY KEY,
     accommodation_id INTEGER REFERENCES accommodation(accommodation_id) ON UPDATE NO ACTION ON DELETE NO ACTION,
     name VARCHAR(50) NOT NULL,
-    type_room VARCHAR(20) DEFAULT '2_person' CHECK (type_room IN ('2_person', '4_person', 'the_whole_house')) NOT NULL,
+    type_room INTEGER DEFAULT '2' NOT NULL,
     price INTEGER,
     active SMALLINT DEFAULT 0
 );

@@ -6,6 +6,6 @@ import lombok.Data;
 public class RoomRequest {
     private Long accommodationId;
     private String name;
-    private String typeRoom;
+    private Integer typeRoom;
     private Integer price;
 }

@@ -19,6 +19,9 @@ public class Customer {
     @Column(length = 50, nullable = false)
     private String name;
 
+    @Column(length = 50)
+    private String userName;
+
     @Column(name = "national_id", length = 20, nullable = false)
     private String nationalId;
 

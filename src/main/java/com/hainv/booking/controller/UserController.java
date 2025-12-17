@@ -2,6 +2,8 @@ package com.hainv.booking.controller;
 
 import com.hainv.booking.entity.booking.Booking;
 import com.hainv.booking.entity.booking.Customer;
+import com.hainv.booking.entity.booking.Room;
+import com.hainv.booking.entity.dto.UserCustomerModal;
 import com.hainv.booking.entity.user.User;
 import com.hainv.booking.entity.user.UserRequest;
 import com.hainv.booking.entity.user.UserSummary;
@@ -10,6 +12,8 @@ import com.hainv.booking.repository.booking.CustomerRepository;
 import com.hainv.booking.repository.user.RoleRepository;
 import com.hainv.booking.repository.user.UserRepository;
 import com.hainv.booking.security.JwtTokenProvider;
+import com.hainv.booking.service.IUserService;
+import com.hainv.booking.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserRepository userRepository;
@@ -26,8 +29,9 @@ public class UserController {
     private final RoleRepository roleRepository;
     private final CustomerRepository customerRepository;
     private final JwtTokenProvider jwt;
+    private final IUserService userService;
 
-    @PostMapping
+    @PostMapping("/user")
     public Optional<UserSummary> create(@RequestBody UserRequest userRequest) throws Exception {
         Optional<User> existingUser = userRepository.findByUsernameAll(userRequest.getUsername());
         if (existingUser.isPresent()) {
@@ -58,7 +62,7 @@ public class UserController {
         return userRepository.findProjectedByUsername(user.getUsername());
     }
 
-    @DeleteMapping("/{userName}")
+    @DeleteMapping("/user/{userName}")
     public void deleteUser(@PathVariable String userName) {
         User user = userRepository.findByUsername(userName)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -66,17 +70,17 @@ public class UserController {
         userRepository.delete(user);
     }
 
-    @PostMapping("/role")
+    @PostMapping("/api/users/role")
     public List<User> setRole(@RequestBody User user) {
         return userRepository.findAll();
     }
 
-    @GetMapping
-    public List<User> findAll() {
-        return userRepository.findAll();
+    @GetMapping("/api/users")
+    public ApiResponse<List<UserCustomerModal>> findAll() {
+        return ApiResponse.success(userService.findAllUsers());
     }
 
-    @GetMapping("/bookings")
+    @GetMapping("/api/user/bookings")
     public List<Booking> getBookings() {
         return bookingRepository.findAll(); // → truy cập DB booking_hotel
     }

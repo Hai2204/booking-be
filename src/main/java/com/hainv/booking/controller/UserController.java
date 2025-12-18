@@ -4,6 +4,7 @@ import com.hainv.booking.entity.booking.Booking;
 import com.hainv.booking.entity.booking.Customer;
 import com.hainv.booking.entity.booking.Room;
 import com.hainv.booking.entity.dto.UserCustomerModal;
+import com.hainv.booking.entity.user.Role;
 import com.hainv.booking.entity.user.User;
 import com.hainv.booking.entity.user.UserRequest;
 import com.hainv.booking.entity.user.UserSummary;
@@ -32,7 +33,7 @@ public class UserController {
     private final IUserService userService;
 
     @PostMapping("/user")
-    public Optional<UserSummary> create(@RequestBody UserRequest userRequest) throws Exception {
+    public ApiResponse<UserSummary> create(@RequestBody UserRequest userRequest) throws Exception {
         Optional<User> existingUser = userRepository.findByUsernameAll(userRequest.getUsername());
         if (existingUser.isPresent()) {
             throw new Exception("Tên đăng nhập đã tồn tại");
@@ -48,7 +49,8 @@ public class UserController {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(userRequest.getPassword()));
-        user.setRole(roleRepository.findById(userRequest.getRoleId()).orElseThrow(() -> new Exception("Role không tồn tại")));
+        Role rol = roleRepository.findByRoleCode(userRequest.getRoleName()).orElseThrow(() -> new Exception("Role không tồn tại"));
+        user.setRole(rol);
         userRepository.save(user);
 
         Customer cus = new Customer();
@@ -57,9 +59,10 @@ public class UserController {
         cus.setEmail(userRequest.getEmail());
         cus.setPhoneNumber(userRequest.getPhone());
         cus.setNationalId(userRequest.getNationalId());
+        cus.setUserName(userRequest.getUsername());
         customerRepository.save(cus);
 
-        return userRepository.findProjectedByUsername(user.getUsername());
+        return ApiResponse.success(userRepository.findProjectedByUsername(user.getUsername()).get());
     }
 
     @DeleteMapping("/user/{userName}")

@@ -6,11 +6,11 @@ import java.util.Set;
 @Data
 public class UserRequest {
     private String username;
-    private String password;
     private String fullName;
-    private Long roleId;
     private String email;
     private String phone;
     private Integer age;
     private String nationalId;
+    private String roleName;
+    private String password;
 }

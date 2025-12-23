@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RoomRepository extends JpaRepository<Room, Long> {
@@ -16,4 +17,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
        WHERE (:category IS NULL OR r.roomCategory = :category)
        """)
     List<Room> findRooms(@Param("category") String category, Pageable pageable);
+
+    Optional<Room> findByRoomCode(String roomCode);
 }

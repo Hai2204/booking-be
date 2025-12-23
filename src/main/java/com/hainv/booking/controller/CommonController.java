@@ -24,8 +24,17 @@ public class CommonController {
     public ApiResponse<Partner> createPartner(@RequestBody Partner partner) throws Exception {
         return ApiResponse.success(partnerRepository.save(partner));
     }
-    @GetMapping("/partner")
-    public ApiResponse<List<Partner>> listPartners(@RequestParam(name = "Id", required = false) Long id) throws Exception {
+    @PutMapping("/partner")
+    public ApiResponse<Partner> updatePartner(@RequestBody Partner partner) throws Exception {
+        return ApiResponse.success(partnerRepository.save(partner));
+    }
+    @DeleteMapping("/partner/{partnerId}")
+    public ApiResponse<Boolean> deletePartner(@PathVariable Long partnerId) throws Exception {
+        partnerRepository.deleteById(partnerId);
+        return ApiResponse.success(Boolean.TRUE);
+    }
+    @GetMapping("/partners")
+    public ApiResponse<List<Partner>> listPartners(@RequestParam(name = "id", required = false) Long id) throws Exception {
         if (id != null){
             return ApiResponse.success(partnerRepository.findAllById(Collections.singleton(id)));
         }

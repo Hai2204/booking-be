@@ -3,6 +3,9 @@ package com.hainv.booking.entity.booking;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import jakarta.persistence.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+
 import java.util.List;
 
 @Entity
@@ -10,6 +13,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLRestriction(" ACTIVE = 1")
+@SQLDelete(sql = " UPDATE Room SET ACTIVE = 0 WHERE id = ? ")
 public class Room {
 
     @Id

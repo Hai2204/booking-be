@@ -36,8 +36,27 @@ public class RoomController {
         room.setAmenities(request.getAmenities());
         room.setPolicy(request.getPolicy());
 
-        room = roomRepository.save(room);
-        return ApiResponse.success(room);
+        return ApiResponse.success(roomRepository.save(room));
+    }
+
+    @PutMapping("/room")
+    public ApiResponse<Room> updateRoom(@RequestBody RoomRequest request) {
+        Accommodation accommodation = accommodationRepository.findByAccommodationId(request.getAccommodationId())
+                .orElseThrow(() -> new RuntimeException("Accommodation not found"));
+
+        Room room = roomRepository.findByRoomCode(request.getRoomCode()).orElseThrow(() -> new RuntimeException("Room not found"));
+
+        room.setAccommodation(accommodation);
+        room.setName(request.getName());
+        room.setTypeRoom(request.getTypeRoom());
+        room.setPrice(request.getPrice());
+        room.setRoomCategory(request.getRoomCategory());
+        room.setRoomCode(request.getRoomCode());
+        room.setDescription(request.getDescription());
+        room.setAmenities(request.getAmenities());
+        room.setPolicy(request.getPolicy());
+
+        return ApiResponse.success(roomRepository.save(room));
     }
 
     @GetMapping("/rooms")
@@ -51,5 +70,16 @@ public class RoomController {
     @GetMapping("/room/{id}")
     public ApiResponse<Room> fetchRooms(@PathVariable Long id) {
         return ApiResponse.success(roomRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found room")));
+    }
+
+    @DeleteMapping("/room/{id}")
+    public ApiResponse<Boolean> deleteRoom(@PathVariable Long id) {
+        try {
+            roomRepository.deleteById(id);
+            return ApiResponse.success(true);
+        } catch (Exception e) {
+            return ApiResponse.success(false);
+        }
+
     }
 }

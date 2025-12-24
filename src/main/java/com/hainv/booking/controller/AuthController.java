@@ -4,6 +4,7 @@ import com.hainv.booking.entity.dto.UserLoginModal;
 import com.hainv.booking.entity.user.User;
 import com.hainv.booking.repository.user.UserRepository;
 import com.hainv.booking.security.JwtTokenProvider;
+import com.hainv.booking.service.IPermissionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,6 +23,8 @@ public class AuthController {
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwt;
+    private final IPermissionService permissionService;
+
     @PostMapping("/login")
     public Map<String, Object> loginByUser(@RequestBody User user) throws Exception {
         User u = userRepository.findByUsername(user.getUsername()).orElseThrow(() -> new UsernameNotFoundException("Not found User"));
@@ -37,6 +40,7 @@ public class AuthController {
 
         Map<String, Object> result = new HashMap<>();
         result.put("user", userModal);
+        result.put("permissions", permissionService.getUserMenus(u.getUsername()));
         result.put("token", jwt.generateToken(user.getUsername()));
         return result;
 

@@ -24,7 +24,8 @@ public class PermissionService implements IPermissionService {
                 .map(f -> new FeatureDTO(
                         f.getCodeId(),
                         f.getName(),
-                        f.getUrl()
+                        f.getUrl(),
+                        f.getIcon()
                 ))
                 .toList();
     }

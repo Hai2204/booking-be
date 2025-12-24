@@ -23,6 +23,9 @@ public class Feature {
     @Column(name = "url", nullable = false)
     private String url;
 
+    @Column(name = "icon", nullable = false)
+    private String icon;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
